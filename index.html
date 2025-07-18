@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        /* Login Container */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-box {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 350px;
+            text-align: center;
+        }
+
+        .login-box h2 {
+            margin-bottom: 1.5rem;
+            color: #444;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .login-btn:hover {
+            opacity: 0.9;
+        }
+
+        /* Dashboard Styles */
+        .dashboard {
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+        }
+
+        header {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-btn {
+            flex: 1;
+            min-width: 180px;
+            max-width: 220px;
+            padding: 1.2rem 0.5rem;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-btn i {
+            font-size: 1.5rem;
+        }
+
+        .feature-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-btn[data-feature="websites"] {
+            background: linear-gradient(to right, #667eea, #764ba2);
+        }
+
+        .feature-btn[data-feature="code-editor"] {
+            background: linear-gradient(to right, #43e97b, #38f9d7);
+        }
+
+        .feature-btn[data-feature="apps"] {
+            background: linear-gradient(to right, #ff758c, #ff7eb3);
+        }
+
+        .feature-btn[data-feature="files"] {
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+        }
+
+        .feature-btn[data-feature="empty"] {
+            background: linear-gradient(to right, #a18cd1, #fbc2eb);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2rem;
+            background: #f9f9f9;
+        }
+
+        .welcome-message {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .welcome-message h2 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-message p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* Feature Content Styles */
+        .feature-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-content h3 {
+            color: #444;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Websites Feature */
+        .website-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .website-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .website-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .website-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #444;
+        }
+
+        .website-url {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            word-break: break-all;
+        }
+
+        .website-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+        }
+
+        .copy-btn {
+            background: #4facfe;
+            color: white;
+        }
+
+        .open-btn {
+            background: #43e97b;
+            color: white;
+        }
+
+        /* Code Editor Feature */
+        .code-editor-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .code-editor {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .editor-header {
+            background: #f5f5f5;
+            padding: 0.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .editor-title {
+            font-weight: 600;
+            color: #444;
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            resize: vertical;
+            background: #fafafa;
+        }
+
+        .editor-textarea:focus {
+            outline: none;
+        }
+
+        /* Apps Feature */
+        .apps-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .app-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .app-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: #666;
+        }
+
+        .app-name {
+            font-weight: 600;
+            color: #444;
+            text-align: center;
+        }
+
+        .download-apk {
+            width: 100%;
+            padding: 0.5rem;
+            background: #ff758c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .download-apk:hover {
+            opacity: 0.9;
+        }
+
+        /* Files Feature */
+        .files-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .file-card {
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .file-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-icon {
+            font-size: 2rem;
+            color: #4facfe;
+            text-align: center;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: #444;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .download-file {
+            width: 100%;
+            padding: 0.5rem;
+            background: #a18cd1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .download-file:hover {
+            opacity: 0.9;
+        }
+
+        /* Empty Feature */
+        .empty-feature {
+            text-align: center;
+            padding: 3rem;
+        }
+
+        .empty-feature i {
+            font-size: 3rem;
+            color: #a18cd1;
+            margin-bottom: 1rem;
+        }
+
+        .empty-feature h3 {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .empty-feature p {
+            color: #999;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .login-box {
+                width: 90%;
+                max-width: 350px;
+            }
+            
+            .button-container {
+                padding: 1rem;
+            }
+        
+            .feature-btn {
+                min-width: 150px;
+                padding: 1rem 0.5rem;
+            }
+            
+            .content-area {
+                padding: 1rem;
+            }
+            
+            .website-list, .apps-list, .files-list {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container" id="login-container">
+        <div class="login-box">
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="dashboard" id="dashboard">
+        <header>
+            <h1>Admin Dashboard</h1>
+            <button id="logout-btn" class="logout-btn">Logout <i class="fas fa-sign-out-alt"></i></button>
+        </header>
+        
+        <div class="button-container">
+            <button class="feature-btn" data-feature="websites">
+                <i class="fas fa-globe"></i> Websites
+            </button>
+            <button class="feature-btn" data-feature="code-editor">
+                <i class="fas fa-code"></i> Code Editor
+            </button>
+            <button class="feature-btn" data-feature="apps">
+                <i class="fas fa-mobile-alt"></i> Apps
+            </button>
+            <button class="feature-btn" data-feature="files">
+                <i class="fas fa-file-download"></i> Files
+            </button>
+            <button class="feature-btn" data-feature="empty">
+                <i class="fas fa-plus"></i> Empty
+            </button>
+        </div>
+
+        <div class="content-area" id="content-area">
+            <div class="welcome-message">
+                <h2>Welcome to Admin Dashboard</h2>
+                <p>Please select a feature from the buttons above</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        const data = {
+            users: [
+                { username: "12", password: "12" },
+                { username: "12", password: "12" }
+            ],
+            websites: [
+                { name: "Google", url: "https://www.google.com" },
+                { name: "Facebook", url: "https://www.facebook.com" },
+                { name: "YouTube", url: "https://www.youtube.com" }
+            ],
+            codeSnippets: {
+                html: "<!-- Enter your HTML code here -->\n<div>\n  <h1>Hello World!</h1>\n</div>",
+                css: "/* Enter your CSS code here */\nbody {\n  font-family: Arial, sans-serif;\n  margin: 0;\n  padding: 0;\n}",
+                js: "// Enter your JavaScript code here\nfunction hello() {\n  alert('Hello World!');\n}"
+            },
+            apps: [
+                { name: "Weather App", logo: "☀️" },
+                { name: "Calculator", logo: "🧮" },
+                { name: "Notes App", logo: "📝" }
+            ],
+            files: [
+                { name: "HTML Template", type: "html" },
+                { name: "CSS Stylesheet", type: "css" },
+                { name: "JavaScript File", type: "js" },
+                { name: "Theme Pack", type: "zip" },
+                { name: "Documentation", type: "pdf" }
+            ]
+        };
+
+        // DOM Elements
+        const loginContainer = document.getElementById('login-container');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('login-form');
+        const logoutBtn = document.getElementById('logout-btn');
+        const contentArea = document.getElementById('content-area');
+        const featureBtns = document.querySelectorAll('.feature-btn');
+
+        // Initialize
+        dashboard.style.display = 'none';
+
+        // Login Functionality
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Check credentials
+            const user = data.users.find(u => u.username === username && u.password === password);
+            
+            if (user) {
+                // Successful login
+                loginContainer.style.display = 'none';
+                dashboard.style.display = 'flex';
+                showWelcomeMessage();
+            } else {
+                alert('Invalid username or password');
+            }
+        });
+
+        // Logout Functionality
+        logoutBtn.addEventListener('click', function() {
+            dashboard.style.display = 'none';
+            loginContainer.style.display = 'flex';
+            document.getElementById('login-form').reset();
+        });
+
+        // Feature Buttons Functionality
+        featureBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const feature = this.getAttribute('data-feature');
+                showFeatureContent(feature);
+            });
+        });
+
+        // Show Welcome Message
+        function showWelcomeMessage() {
+            contentArea.innerHTML = `
+                <div class="welcome-message">
+                    <h2>Welcome to Admin Dashboard</h2>
+                    <p>Please select a feature from the buttons above</p>
+                </div>
+            `;
+        }
+
+        // Show Feature Content
+        function showFeatureContent(feature) {
+            let content = '';
+            
+            switch(feature) {
+                case 'websites':
+                    content = showWebsites();
+                    break;
+                case 'code-editor':
+                    content = showCodeEditor();
+                    break;
+                case 'apps':
+                    content = showApps();
+                    break;
+                case 'files':
+                    content = showFiles();
+                    break;
+                case 'empty':
+                    content = showEmptyFeature();
+                    break;
+                default:
+                    content = showWelcomeMessage();
+            }
+            
+            contentArea.innerHTML = content;
+            
+            // Add event listeners for dynamic elements
+            if (feature === 'websites') {
+                document.querySelectorAll('.copy-btn').forEach(btn => {
+                    btn.addEventListener('click', copyToClipboard);
+                });
+                
+                document.querySelectorAll('.open-btn').forEach(btn => {
+                    btn.addEventListener('click', openWebsite);
+                });
+            }
+            
+            if (feature === 'code-editor') {
+                document.getElementById('copy-html').addEventListener('click', () => copyCode('html'));
+                document.getElementById('copy-css').addEventListener('click', () => copyCode('css'));
+                document.getElementById('copy-js').addEventListener('click', () => copyCode('js'));
+                
+                document.getElementById('download-html').addEventListener('click', () => downloadCode('html'));
+                document.getElementById('download-css').addEventListener('click', () => downloadCode('css'));
+                document.getElementById('download-js').addEventListener('click', () => downloadCode('js'));
+                
+                document.getElementById('html-code').addEventListener('input', updateCode);
+                document.getElementById('css-code').addEventListener('input', updateCode);
+                document.getElementById('js-code').addEventListener('input', updateCode);
+            }
+            
+            if (feature === 'apps') {
+                document.querySelectorAll('.download-apk').forEach(btn => {
+                    btn.addEventListener('click', downloadApk);
+                });
+            }
+            
+            if (feature === 'files') {
+                document.querySelectorAll('.download-file').forEach(btn => {
+                    btn.addEventListener('click', downloadFile);
+                });
+            }
+        }
+
+        // Websites Feature
+        function showWebsites() {
+            let websitesHTML = data.websites.map(website => `
+                <div class="website-card">
+                    <div class="website-name">${website.name}</div>
+                    <div class="website-url">${website.url}</div>
+                    <div class="website-actions">
+                        <button class="action-btn copy-btn" data-url="${website.url}">Copy</button>
+                        <button class="action-btn open-btn" data-url="${website.url}">Open</button>
+                    </div>
+                </div>
+            `).join('');
+            
+            return `
+                <div class="feature-content">
+                    <h3>Website Links</h3>
+                    <div class="website-list">
+                        ${websitesHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Code Editor Feature
+        function showCodeEditor() {
+            return `
+                <div class="feature-content">
+                    <h3>Code Editor</h3>
+                    <div class="code-editor-container">
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <div class="editor-title">HTML</div>
+                                <div class="editor-actions">
+                                    <button class="action-btn copy-btn" id="copy-html">Copy</button>
+                                    <button class="action-btn download-btn" id="download-html">Download</button>
+                                </div>
+                            </div>
+                            <textarea class="editor-textarea" id="html-code">${data.codeSnippets.html}</textarea>
+                        </div>
+                        
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <div class="editor-title">CSS</div>
+                                <div class="editor-actions">
+                                    <button class="action-btn copy-btn" id="copy-css">Copy</button>
+                                    <button class="action-btn download-btn" id="download-css">Download</button>
+                                </div>
+                            </div>
+                            <textarea class="editor-textarea" id="css-code">${data.codeSnippets.css}</textarea>
+                        </div>
+                        
+                        <div class="code-editor">
+                            <div class="editor-header">
+                                <div class="editor-title">JavaScript</div>
+                                <div class="editor-actions">
+                                    <button class="action-btn copy-btn" id="copy-js">Copy</button>
+                                    <button class="action-btn download-btn" id="download-js">Download</button>
+                                </div>
+                            </div>
+                            <textarea class="editor-textarea" id="js-code">${data.codeSnippets.js}</textarea>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Apps Feature
+        function showApps() {
+            let appsHTML = data.apps.map(app => `
+                <div class="app-card">
+                    <div class="app-logo">${app.logo}</div>
+                    <div class="app-name">${app.name}</div>
+                    <button class="download-apk">Download APK</button>
+                </div>
+            `).join('');
+            
+            return `
+                <div class="feature-content">
+                    <h3>Apps</h3>
+                    <div class="apps-list">
+                        ${appsHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Files Feature
+        function showFiles() {
+            let filesHTML = data.files.map(file => `
+                <div class="file-card">
+                    <div class="file-icon">${getFileIcon(file.type)}</div>
+                    <div class="file-name">${file.name}</div>
+                    <button class="download-file">Download</button>
+                </div>
+            `).join('');
+            
+            return `
+                <div class="feature-content">
+                    <h3>Files</h3>
+                    <div class="files-list">
+                        ${filesHTML}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Empty Feature
+        function showEmptyFeature() {
+            return `
+                <div class="feature-content empty-feature">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>Empty Feature</h3>
+                    <p>This feature is currently empty. You can add content later.</p>
+                </div>
+            `;
+        }
+
+        // Helper Functions
+        function getFileIcon(type) {
+            const icons = {
+                html: '<i class="fab fa-html5"></i>',
+                css: '<i class="fab fa-css3-alt"></i>',
+                js: '<i class="fab fa-js-square"></i>',
+                zip: '<i class="fas fa-file-archive"></i>',
+                pdf: '<i class="fas fa-file-pdf"></i>'
+            };
+            return icons[type] || '<i class="fas fa-file"></i>';
+        }
+
+        function copyToClipboard(e) {
+            const url = e.target.getAttribute('data-url');
+            navigator.clipboard.writeText(url)
+                .then(() => {
+                    alert('URL copied to clipboard!');
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+        }
+
+        function openWebsite(e) {
+            const url = e.target.getAttribute('data-url');
+            window.open(url, '_blank');
+        }
+
+        function copyCode(type) {
+            const code = document.getElementById(`${type}-code`).value;
+            navigator.clipboard.writeText(code)
+                .then(() => {
+                    alert(`${type.toUpperCase()} code copied to clipboard!`);
+                })
+                .catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+        }
+
+        function downloadCode(type) {
+            const code = document.getElementById(`${type}-code`).value;
+            const blob = new Blob([code], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `code.${type}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function updateCode() {
+            data.codeSnippets.html = document.getElementById('html-code').value;
+            data.codeSnippets.css = document.getElementById('css-code').value;
+            data.codeSnippets.js = document.getElementById('js-code').value;
+        }
+
+        function downloadApk() {
+            alert('APK download started (simulated)');
+        }
+
+        function downloadFile() {
+            alert('File download started (simulated)');
+        }
+    </script>
+</body>
+</html>
